@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @category    Inchoo
+ * @package     Inchoo_MyCheckOut
+ * @author      Branko Ajzele <ajzele@gmail.com>
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<config>
+    <modules>
+        <Inchoo_MyCheckOut>
+            <active>true</active>
+            <codePool>community</codePool>
+            <depends>
+                <Mage_Payment />
+            </depends>
+        </Inchoo_MyCheckOut>
+    </modules>
+</config>

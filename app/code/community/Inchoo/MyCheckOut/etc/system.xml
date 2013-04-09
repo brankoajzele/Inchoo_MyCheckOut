@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * @category    Inchoo
+ * @package     Inchoo_MyCheckOut
+ * @author      Branko Ajzele <ajzele@gmail.com>
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<config>
+   <sections>
+        <payment>
+            <groups>
+                <inchoo_mycheckout translate="label" module="inchoo_mycheckout">
+                    <label>PBZ MyCheckOut (Redirect)</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>666</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <comment><![CDATA[PBZ Card <a href="http://www.pbzcard.hr/hr/online-usluge/prodajna-mjesta/mycheckout">MyCheckOut</a> usluga namijenjena je partnerima koji imaju svoje internetsko prodajno mjesto i svojim kupcima žele ponuditi mogućnost plaćanja karticama putem interneta u realnom vremenu.]]></comment>
+                    <fields>
+                        <active translate="label">
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </active>
+                        
+                        <title translate="label">
+                            <label>Title</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </title>
+                                     
+                        <merchant_id translate="label">
+                            <label>Merchant ID</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </merchant_id>
+
+                        <secure_key translate="label">
+                            <label>Secure Key</label>
+                            <frontend_type>obscure</frontend_type>
+                            <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+                            <comment><![CDATA[SecureKey (POVJERLJIVO) (prije slanja testnih/produkcijskih autorizacijskih poruka, internet trgovac ga treba izmijeniti kroz MyCheckOut administracijsko sučelje).]]></comment>                            
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </secure_key>
+                                                                        
+                        <trantype translate="label">
+                            <label>Transaction Type</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>inchoo_mycheckout/system_config_source_trantype</source_model>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </trantype>
+                        
+                        <purchase_description_type>
+                            <label>Purchase Description Type</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>inchoo_mycheckout/system_config_source_purchase_description_type</source_model>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>                            
+                            <comment><![CDATA[Used for "purchase_description" parameter.]]></comment>
+                        </purchase_description_type>
+                        
+                        <mycheckout_post_url translate="label">
+                            <label>MyCheckOut POST URL</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>70</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </mycheckout_post_url>
+                        
+                        <payment_step_information translate="label">
+                            <label>Payment Step Information</label>
+                            <frontend_type>textarea</frontend_type>
+                            <comment><![CDATA[HTML content to add to Onepage Checkout > Payment Information step, right under the "PBZ MyCheckOut (Redirect)" method.]]></comment>
+                            <sort_order>80</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </payment_step_information>
+                        
+                        <payment_progress_information translate="label">
+                            <label>Payment Progress Information</label>
+                            <frontend_type>textarea</frontend_type>
+                            <comment><![CDATA[HTML content to add to Onepage Checkout > "Your Checkout Progress" sidebar area.]]></comment>
+                            <sort_order>90</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </payment_progress_information>
+                        
+                       <pending_order_status translate="label">
+                            <label>Pending Order Status</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>inchoo_mycheckout/system_config_source_order_pending_status</source_model>
+                            <comment><![CDATA[Basically 1 order state is in question here: new. If you create a custom status, under "System > Order Statuses", for one of this state that status will appear here on the drop-down list and you can select it. Default state is "new", which if you look at "System > Order Statuses" has assigned "Pending" label.]]></comment>
+                            <sort_order>100</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </pending_order_status>                        
+                        
+                        <debug translate="label">
+                            <label>Debug</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>110</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </debug>                           
+                    </fields>
+                </inchoo_mycheckout>
+            </groups>
+        </payment>
+    </sections>
+</config>

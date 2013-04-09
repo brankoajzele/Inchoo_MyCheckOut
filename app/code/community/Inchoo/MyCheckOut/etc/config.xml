@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * @category    Inchoo
+ * @package     Inchoo_MyCheckOut
+ * @author      Branko Ajzele <ajzele@gmail.com>
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<config>
+    <modules>
+        <Inchoo_MyCheckOut>
+            <version>1.0.0.0</version>
+        </Inchoo_MyCheckOut>
+    </modules>
+    <global>
+        <models>
+            <inchoo_mycheckout>
+                <class>Inchoo_MyCheckOut_Model</class>
+            </inchoo_mycheckout>
+        </models>
+        <helpers>
+            <inchoo_mycheckout>
+                <class>Inchoo_MyCheckOut_Helper</class>
+            </inchoo_mycheckout>
+        </helpers>
+        <blocks>
+            <inchoo_mycheckout>
+                <class>Inchoo_MyCheckOut_Block</class>
+            </inchoo_mycheckout>
+        </blocks>
+    </global>
+    <frontend>
+        <routers>
+            <inchoo_mycheckout>
+                <use>standard</use>
+                <args>
+                    <module>Inchoo_MyCheckOut</module>
+                    <frontName>pbzmycheckout</frontName>
+                </args>
+            </inchoo_mycheckout>
+        </routers>
+    </frontend>
+    <adminhtml>
+        <translate>
+            <modules>
+                <Inchoo_MyCheckOut>
+                    <files>
+                        <default>Inchoo_MyCheckOut.csv</default>
+                    </files>
+                </Inchoo_MyCheckOut>
+            </modules>
+        </translate>
+    </adminhtml>
+    
+    <default>
+        <payment>
+            <inchoo_mycheckout>
+            	<model>inchoo_mycheckout/payment</model>
+                <active>0</active>
+            	<title><![CDATA[PBZ MyCheckOut (Redirect)]]></title>
+                <trantype>preauth</trantype>
+                <purchase_description_type>cart_item_sku</purchase_description_type>
+                <mycheckout_post_url><![CDATA[https://mycheckout.pbzcard.hr/icheckout/]]></mycheckout_post_url>
+                <pending_order_status>pending</pending_order_status>
+                <debug>0</debug>
+            </inchoo_mycheckout>
+        </payment>
+    </default>    
+    
+</config>
