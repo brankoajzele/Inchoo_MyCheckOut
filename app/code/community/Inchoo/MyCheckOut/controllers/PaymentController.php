@@ -7,6 +7,17 @@
  */
 class Inchoo_MyCheckOut_PaymentController extends Mage_Core_Controller_Front_Action
 {
+    private $_orderNumber;
+    private $_responseRandomNumber;
+    private $_responseHash;
+    
+    protected function _construct()
+    {
+        $this->_orderNumber = $this->getRequest()->getParam('order_number');
+        $this->_responseRandomNumber = $this->getRequest()->getParam('response_random_number');
+        $this->_responseHash = $this->getRequest()->getParam('response_hash');        
+    }    
+    
     /**
      * When a customer chooses "PBZ MyCheckOut (Redirect)" on Checkout/Payment page
      *
@@ -22,6 +33,15 @@ class Inchoo_MyCheckOut_PaymentController extends Mage_Core_Controller_Front_Act
     public function cancelAction()
     {
         $helper = Mage::helper('inchoo_mycheckout');
+        
+        /* Validate PBZ MyCheckOut response */
+        if ($helper->validateResponseHash($this->_orderNumber, $this->_responseRandomNumber, $this->_responseHash) === false) {
+            Mage::getSingleton('core/session')
+                ->addNotice($helper->__('Invalid response from payment gateway, response_hash value is faulty.'));
+            
+            $this->_redirect('no-route');
+            return;                        
+        }
 
         $session = Mage::getSingleton('checkout/session');
         
@@ -51,7 +71,14 @@ class Inchoo_MyCheckOut_PaymentController extends Mage_Core_Controller_Front_Act
                         $historyItem->setComment($comment);
                         $historyItem->setIsCustomerNotified(0);
                         $historyItem->save();
-                    }              
+                    }  
+                    
+                    try {
+                        $order->setStatus($helper->getCanceledOrderStatus());
+                        $order->save();
+                    } catch (Exception $e) {
+                        Mage::logException($e);
+                    }
                 
                 Mage::getSingleton('core/session')
                     ->addNotice($helper->__('Order %s has been successfully canceled!', $order->getIncrementId()));
@@ -69,6 +96,15 @@ class Inchoo_MyCheckOut_PaymentController extends Mage_Core_Controller_Front_Act
     {
         $helper = Mage::helper('inchoo_mycheckout');
         
+        /* Validate PBZ MyCheckOut response */
+        if ($helper->validateResponseHash($this->_orderNumber, $this->_responseRandomNumber, $this->_responseHash) === false) {
+            Mage::getSingleton('core/session')
+                ->addNotice($helper->__('Invalid response from payment gateway, response_hash value is faulty.'));
+            
+            $this->_redirect('no-route');
+            return;                        
+        }
+        
         $session = Mage::getSingleton('checkout/session');
         
         if ($session->getLastRealOrderId()) {
@@ -76,130 +112,46 @@ class Inchoo_MyCheckOut_PaymentController extends Mage_Core_Controller_Front_Act
 
             if ($order && $order->getIncrementId() == $session->getLastRealOrderId()) {
                 
-//                $allowedOrderStates = Mage::getModel('inchoo_mycheckout/system_config_source_order_status')->getAvailableStates();
-//                
-//                if (in_array($order->getState(), $allowedOrderStates)) {
-                    $session->unsLastRealOrderId();
-                    
-                /**
+                $session->unsLastRealOrderId();
 
-                    params array(11) {
-                      ["response_result"] => string(3) "000"
-                      ["response_random_number"] => string(9) "974539404"
-                      ["order_number"] => string(10) "1365421223"
-                      ["response_appcode"] => string(6) "267000"
-                      ["response_message"] => string(19) "ODOBREN AMEX 267000"
-                      ["response_systan"] => string(6) "733767"
-                      ["response_hash"] => string(40) "f5f8a3ba30ec266dc4443efc34877da3bfecff6e"
-                      ["masked_pan"] => string(15) "377500*****1005"
-                      ["card_type"] => string(4) "Amex"
-                      ["aPauseTimer"] => string(5) "false"
-                      ["aSubmitForm"] => string(4) "true"
-                    }
+                $response_result = $this->getRequest()->getParam('response_result');
+                
+                if($response_result !== Inchoo_MyCheckOut_Model_Payment::RESPONSE_RESULT_OK) {
 
-                 */                    
-                    
-                    $response_result = $this->getRequest()->getParam('response_result');
+                    $knownResponseResults = Inchoo_MyCheckOut_Model_Payment::getKnownResponseResults();
 
-                    if($response_result !== Inchoo_MyCheckOut_Model_Payment::RESPONSE_RESULT_OK) {
-                        
-                        $knownResponseResults = Inchoo_MyCheckOut_Model_Payment::getKnownResponseResults();
-                        
-                        if (in_array($response_result, $knownResponseResults)) {
-                            Mage::getSingleton('core/session')->addNotice($helper->__('Faulty response result: %s.', $knownResponseResults[$response_result]));
-                        } else {
-                            Mage::getSingleton('core/session')->addNotice($helper->__('Faulty response result: %s.', $response_result));                            
-                        }
-
-                        $this->_redirect('no-route');
-                        return;
-                    }
-                    
-                    $params = $this->getRequest()->getParams();
-                    $paramsString = '';
-                    
-                    foreach ($params as $k => $v) {
-                        $paramsString .= sprintf('%s: %s, ', htmlentities($k), htmlentities($v));
-                    }                    
-                    
-//                    $shopID = $helper->getShopId();
-//
-//                    $shoppingCartID = (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST']:'');
-//                    $shoppingCartID = str_replace('.', '', $shoppingCartID);
-//                    $shoppingCartID .= $order->getData('increment_id');
-//                    
-//                    $totalAmount = $helper->formatPrice($order->getData('grand_total'));
-//                    $signature = $helper->encodeResponse($shopID, $shoppingCartID, $totalAmount, $tid);
-//
-//                    if(strcmp(strtoupper($sig), strtoupper($signature)) != 0) {
-//                        Mage::getSingleton('core/session')->addError($helper->__('PayWay transaction signature mismatch.'));
-//                        $this->_redirect('no-route');
-//                        return;
-//                    }
-                    
-                    if ($helper->getTrantype() === Inchoo_MyCheckOut_Model_System_Config_Source_Trantype::TYPE_AUTHORIZE_ONLY) {
-                        $comment = $helper->__('PBZ MyCheckOut system successfully authorized transaction. Transaction info => %s', $paramsString);
+                    if (in_array($response_result, $knownResponseResults)) {
+                        Mage::getSingleton('core/session')->addNotice($helper->__('Faulty response result: %s.', $knownResponseResults[$response_result]));
                     } else {
-                        $comment = $helper->__('PBZ MyCheckOut system successfully authorized and captured transaction. Transaction info => %s', $paramsString);
+                        Mage::getSingleton('core/session')->addNotice($helper->__('Faulty response result: %s.', $response_result));                            
                     }
-                    
-                    $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING);
-                    $order->setStatus($helper->getOrderStatusConfig());
-                    /* Mage_Sales_Model_Order -> addStatusToHistory($status, $comment = '', $isCustomerNotified = false) */
-                    $order->addStatusToHistory($helper->getPayedOrderStatus(), $comment, true);
-                    
-                    $order->save();
-                    
-                    if ($order->getId()) {
-                        $order->sendNewOrderEmail();
-                    }
-                    
-                    
-//                    if($helper->getAutomaticallyInvoicePayedOrder()) {
-//                        try {
-//                            if ($order->canInvoice()) {
-//                                $invoice = Mage::getModel('sales/service_order', $order)->prepareInvoice();
-//                                $invoice->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::CAPTURE_OFFLINE);
-//                                $invoice->register();
-//                                $invoice->getOrder()->setCustomerNoteNotify(false);
-//                                $invoice->getOrder()->setIsInProcess(true);
-//                                $order->addStatusHistoryComment('Automatically invoiced as per config option setup.', false);
-//
-//                                $transactionSave = Mage::getModel('core/resource_transaction')
-//                                        ->addObject($invoice)
-//                                        ->addObject($invoice->getOrder());
-//
-//                                $transactionSave->save();
-//
-//                                if ($helper->getAutomaticallyShipInvoicedOrder()) {
-//                                    $shipment = $order->prepareShipment();
-//                                    $shipment->register();
-//                                    $order->setIsInProcess(true);
-//                                    $order->addStatusHistoryComment('Automatically shipped as per config option setup.', false);
-//
-//                                    $transactionSave = Mage::getModel('core/resource_transaction')
-//                                            ->addObject($shipment)
-//                                            ->addObject($shipment->getOrder())
-//                                            ->save();          
-//                                }
-//                            }
-//                        } catch (Exception $e) {
-//                            $order->addStatusHistoryComment('Inchoo_Invoicer: Exception occurred during automaticallyInvoiceShipCompleteOrder action. Exception message: ' . $e->getMessage(), false);
-//                            $order->save();
-//                        }
-//                    }                    
-                    
-                    $this->_redirect('checkout/onepage/success', array('_secure'=>true));
+
+                    $this->_redirect('no-route');
                     return;
-//                } else {
-//                    Mage::getSingleton('core/session')->addError($helper->__('Current order state does not allow this action.'));
-//                    $this->_redirect('no-route');
-//                    return;                    
-//                }
+                }
+    
+                if ($helper->getPaymentAction() === Inchoo_MyCheckOut_Model_System_Config_Source_Payment_Action::TYPE_AUTHORIZE_ONLY) {
+                    $comment = $helper->__('PBZ MyCheckOut system successfully authorized transaction.');
+                } else {
+                    $comment = $helper->__('PBZ MyCheckOut system successfully authorized and captured transaction.');
+                }
+
+                $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING);
+                $order->setStatus($helper->getPayedOrderStatus());
+                $order->addStatusToHistory($helper->getPayedOrderStatus(), $comment, true);
+
+                $order->save();
+
+                if ($order->getId()) {
+                    $order->sendNewOrderEmail();
+                }
+                    
+                $this->_redirect('checkout/onepage/success', array('_secure'=>true));
+                return;
             }
         }
         
-        Mage::getSingleton('core/session')->addError($helper->__('Order information could not be found. Either cookie/session was destroyed or you accessed this link directly.'));    
+        Mage::getSingleton('core/session')->addError($helper->__('Order information could not be found. Cookie/Session destroyed?'));
         $this->_redirect('no-route');
         return;
     }

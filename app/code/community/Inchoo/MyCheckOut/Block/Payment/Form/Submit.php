@@ -37,7 +37,7 @@ class Inchoo_MyCheckOut_Block_Payment_Form_Submit extends Mage_Core_Block_Templa
         $requestHash = sha1($helper->getMerchantId() . $totalAmount . $order->getIncrementId() . $helper->getSecureKey());
 
         $form->addField('submit_type', 'hidden', array('name'=>'submit_type', 'value'=>'cust'));
-        $form->addField('trantype', 'hidden', array('name'=>'trantype', 'value'=>$helper->getTrantype()));
+        $form->addField('trantype', 'hidden', array('name'=>'trantype', 'value'=>$helper->getPaymentAction()));
         $form->addField('purchase_amount', 'hidden', array('name'=>'purchase_amount', 'value'=>$totalAmount));
         $form->addField('purchase_currency', 'hidden', array('name'=>'purchase_currency', 'value'=>'191'));
         $form->addField('purchase_description', 'hidden', array('name'=>'purchase_description', 'value'=>$helper->getPurchaseDescription($order)));

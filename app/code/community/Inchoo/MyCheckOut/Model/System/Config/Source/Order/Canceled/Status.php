@@ -1,9 +1,9 @@
 <?php
 
-class Inchoo_MyCheckOut_Model_System_Config_Source_Order_Pending_Status
+class Inchoo_MyCheckOut_Model_System_Config_Source_Order_Canceled_Status
 {
     protected $_stateStatuses = array(
-        Mage_Sales_Model_Order::STATE_NEW, /* fresh new order, "new" order state */
+        Mage_Sales_Model_Order::STATE_CANCELED, /* canceled order state */
     );
 
     public function toOptionArray()

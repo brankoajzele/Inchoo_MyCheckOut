@@ -4,7 +4,7 @@
  * @category    Inchoo
  * @package     Inchoo_MyCheckOut
  * @author      Branko Ajzele <ajzele@gmail.com>
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @license     http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  */
 -->
 <config>
@@ -29,7 +29,6 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </active>
-                        
                         <title translate="label">
                             <label>Title</label>
                             <frontend_type>text</frontend_type>
@@ -37,8 +36,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </title>
-                                     
+                        </title>    
                         <merchant_id translate="label">
                             <label>Merchant ID</label>
                             <frontend_type>text</frontend_type>
@@ -47,7 +45,6 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </merchant_id>
-
                         <secure_key translate="label">
                             <label>Secure Key</label>
                             <frontend_type>obscure</frontend_type>
@@ -58,73 +55,76 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </secure_key>
-                                                                        
-                        <trantype translate="label">
-                            <label>Transaction Type</label>
+                        <payment_action translate="label">
+                            <label>Payment Action</label>
                             <frontend_type>select</frontend_type>
-                            <source_model>inchoo_mycheckout/system_config_source_trantype</source_model>
+                            <source_model>inchoo_mycheckout/system_config_source_payment_action</source_model>
                             <sort_order>50</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
-                        </trantype>
-                        
-                        <purchase_description_type>
-                            <label>Purchase Description Type</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>inchoo_mycheckout/system_config_source_purchase_description_type</source_model>
-                            <sort_order>60</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>0</show_in_store>                            
-                            <comment><![CDATA[Used for "purchase_description" parameter.]]></comment>
-                        </purchase_description_type>
-                        
+                        </payment_action>
                         <mycheckout_post_url translate="label">
                             <label>MyCheckOut POST URL</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>70</sort_order>
+                            <sort_order>60</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </mycheckout_post_url>
-                        
                         <payment_step_information translate="label">
                             <label>Payment Step Information</label>
                             <frontend_type>textarea</frontend_type>
                             <comment><![CDATA[HTML content to add to Onepage Checkout > Payment Information step, right under the "PBZ MyCheckOut (Redirect)" method.]]></comment>
-                            <sort_order>80</sort_order>
+                            <sort_order>70</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </payment_step_information>
-                        
                         <payment_progress_information translate="label">
                             <label>Payment Progress Information</label>
                             <frontend_type>textarea</frontend_type>
                             <comment><![CDATA[HTML content to add to Onepage Checkout > "Your Checkout Progress" sidebar area.]]></comment>
-                            <sort_order>90</sort_order>
+                            <sort_order>80</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </payment_progress_information>
-                        
                        <pending_order_status translate="label">
                             <label>Pending Order Status</label>
                             <frontend_type>select</frontend_type>
                             <source_model>inchoo_mycheckout/system_config_source_order_pending_status</source_model>
                             <comment><![CDATA[Basically 1 order state is in question here: new. If you create a custom status, under "System > Order Statuses", for one of this state that status will appear here on the drop-down list and you can select it. Default state is "new", which if you look at "System > Order Statuses" has assigned "Pending" label.]]></comment>
+                            <sort_order>90</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </pending_order_status>
+                        <payed_order_status translate="label">
+                            <label>Payed Order Status</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>inchoo_mycheckout/system_config_source_order_payed_status</source_model>
+                            <comment><![CDATA[Basically 1 order state is in question here: processing. If you create a custom status, under "System > Order Statuses", for one of this state that status will appear here on the drop-down list and you can select it. Default state is "processing", which if you look at "System > Order Statuses" has assigned "Processing" label. This status applies to order after you successfully payed it on PayWay site and got redirected back to Magento.]]></comment>
                             <sort_order>100</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
-                        </pending_order_status>                        
-                        
+                        </payed_order_status>
+                        <canceled_order_status translate="label">
+                            <label>Canceled Order Status</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>inchoo_mycheckout/system_config_source_order_canceled_status</source_model>
+                            <comment><![CDATA[Basically 1 order state is in question here: canceled. If you create a custom status, under "System > Order Statuses", for one of this state that status will appear here on the drop-down list and you can select it. Default state is "canceled", which if you look at "System > Order Statuses" has assigned "Canceled" label. This status applies to order only if you clicked Cancel on PayWay site and got redirected back to Magento.]]></comment>
+                            <sort_order>110</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </canceled_order_status>
                         <debug translate="label">
                             <label>Debug</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>110</sort_order>
+                            <sort_order>120</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>

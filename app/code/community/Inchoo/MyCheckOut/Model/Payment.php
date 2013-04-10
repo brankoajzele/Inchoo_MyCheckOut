@@ -62,29 +62,28 @@ class Inchoo_MyCheckOut_Model_Payment extends Mage_Payment_Model_Method_Abstract
         return Mage::getUrl('pbzmycheckout/payment/redirect', array('_secure' => true));
     }
     
-//    /**
-//     * Method that will be executed instead of authorize or capture
-//     * if flag isInitializeNeeded set to true
-//     *
-//     * @param string $paymentAction
-//     * @param object $stateObject
-//     *
-//     * @return Mage_Payment_Model_Abstract
-//     */    
-//    public function initialize($paymentAction, $stateObject)
-//    {
-//        
-//        /**
-//         * This is just so that we do not get default 
-//         * "Customer Notification Not Applicable " 
-//         * message under order comments history.
-//         */
-//        $stateObject->setState(Mage_Sales_Model_Order::STATE_NEW);
-//        $stateObject->setStatus(Mage::helper('inchoo_mycheckout')->getPendingOrderStatus());
-//        $stateObject->setIsNotified(false);
-//        
-//        Mage::log($stateObject->debug(), null, 'initialize.log', true);
-//        
-//        return $this;
-//    }     
+    /**
+     * Method that will be executed instead of authorize or capture
+     * if flag isInitializeNeeded set to true
+     * 
+     * Requires <payment_action>xxxxxxxxx</payment_action> to be present in config.xml
+     *
+     * @param string $paymentAction
+     * @param object $stateObject
+     *
+     * @return Mage_Payment_Model_Abstract
+     */    
+    public function initialize($paymentAction, $stateObject)
+    {   
+        /**
+         * This is just so that we do not get default 
+         * "Customer Notification Not Applicable " 
+         * message under order comments history.
+         */
+        $stateObject->setState(Mage_Sales_Model_Order::STATE_NEW);
+        $stateObject->setStatus(Mage::helper('inchoo_mycheckout')->getPendingOrderStatus());
+        $stateObject->setIsNotified(false);
+        
+        return $this;
+    }     
 }
