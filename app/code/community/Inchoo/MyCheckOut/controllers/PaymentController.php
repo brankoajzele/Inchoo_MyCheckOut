@@ -77,7 +77,7 @@ class Inchoo_MyCheckOut_PaymentController extends Mage_Core_Controller_Front_Act
                         $order->setStatus($helper->getCanceledOrderStatus());
                         $order->save();
                         
-                        Mage::dispatchEvent('inchoo_mycheckout_payment_cancel', $order);
+                        Mage::dispatchEvent('inchoo_mycheckout_payment_cancel', array('order'=>$order));
                         
                     } catch (Exception $e) {
                         Mage::logException($e);
@@ -149,7 +149,7 @@ class Inchoo_MyCheckOut_PaymentController extends Mage_Core_Controller_Front_Act
                     $order->sendNewOrderEmail();
                 }
                 
-                Mage::dispatchEvent('inchoo_mycheckout_payment_success', $order);
+                Mage::dispatchEvent('inchoo_mycheckout_payment_success', array('order'=>$order));
                     
                 $this->_redirect('checkout/onepage/success', array('_secure'=>true));
                 return;
