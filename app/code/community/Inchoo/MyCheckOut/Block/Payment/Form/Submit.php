@@ -45,7 +45,7 @@ class Inchoo_MyCheckOut_Block_Payment_Form_Submit extends Mage_Core_Block_Templa
         $form->addField('merchant_id', 'hidden', array('name'=>'merchant_id', 'value'=>$helper->getMerchantId()));
         $form->addField('request_hash', 'hidden', array('name'=>'request_hash', 'value'=>$requestHash));
         
-        $form->addField('customer_lang', 'hidden', array('name'=>'customer_lang', 'value'=>'en'));
+        $form->addField('customer_lang', 'hidden', array('name'=>'customer_lang', 'value'=>'hr'));
         $form->addField('customer_name', 'hidden', array('name'=>'customer_name', 'value'=>$billingAddress->getFirstname()));
         $form->addField('customer_surname', 'hidden', array('name'=>'customer_surname', 'value'=>$billingAddress->getLastname()));
         $form->addField('customer_address', 'hidden', array('name'=>'customer_address', 'value'=>implode('\n', $billingAddress->getStreet())));
