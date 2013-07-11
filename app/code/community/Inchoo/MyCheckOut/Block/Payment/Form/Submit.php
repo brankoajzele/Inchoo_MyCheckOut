@@ -33,7 +33,10 @@ class Inchoo_MyCheckOut_Block_Payment_Form_Submit extends Mage_Core_Block_Templa
              ->setName($formId)
              ->setMethod('POST')
              ->setUseContainer(true);
-
+             
+        $countryCode = $billingAddress->getCountry();
+        $country = Mage::getModel('directory/country')->loadByCode($countryCode);
+        
         $requestHash = sha1($helper->getMerchantId() . $totalAmount . $order->getIncrementId() . $helper->getSecureKey());
 
         $form->addField('submit_type', 'hidden', array('name'=>'submit_type', 'value'=>'cust'));
@@ -49,7 +52,7 @@ class Inchoo_MyCheckOut_Block_Payment_Form_Submit extends Mage_Core_Block_Templa
         $form->addField('customer_name', 'hidden', array('name'=>'customer_name', 'value'=>$billingAddress->getFirstname()));
         $form->addField('customer_surname', 'hidden', array('name'=>'customer_surname', 'value'=>$billingAddress->getLastname()));
         $form->addField('customer_address', 'hidden', array('name'=>'customer_address', 'value'=>implode('\n', $billingAddress->getStreet())));
-        $form->addField('customer_country', 'hidden', array('name'=>'customer_country', 'value'=>'Croatia'));
+        $form->addField('customer_country', 'hidden', array('name'=>'customer_country', 'value'=>$country->getName()));
         $form->addField('customer_city', 'hidden', array('name'=>'customer_city', 'value'=>$billingAddress->getCity()));
         $form->addField('customer_zip', 'hidden', array('name'=>'customer_zip', 'value'=>$billingAddress->getPostcode()));
         $form->addField('customer_phone', 'hidden', array('name'=>'customer_phone', 'value'=>$billingAddress->getTelephone()));
