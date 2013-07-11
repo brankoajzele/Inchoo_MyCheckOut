@@ -7,21 +7,31 @@
  */
 class Inchoo_MyCheckOut_Block_Payment_Form extends Mage_Payment_Block_Form
 {
+    /**
+     * Instructions text
+     *
+     * @var string
+     */
+    protected $_instructions;
+
     protected function _construct()
     {
-    	parent::_construct();
+        parent::_construct();
+        $this->setTemplate('inchoo/mycheckout/payment/form/mycheckout.phtml');
     }
 
-    protected function _toHtml()
+    /**
+     * Get instructions text from config
+     *
+     * @return string
+     */
+    public function getInstructions()
     {
         $helper = Mage::helper('inchoo_mycheckout');
-        
-        $info = $helper->getPaymentStepInformation();
-        
-        if (!empty($info)) {
-            return $info;
+
+        if (is_null($this->_instructions)) {
+            $this->_instructions = $helper->getPaymentStepInformation();
         }
-        
-        return '';
+        return $this->_instructions;
     }
 }
